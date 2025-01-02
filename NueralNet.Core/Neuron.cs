@@ -31,7 +31,7 @@ public class Neuron
     /// <summary>
     /// Gets the bias of the neuron.
     /// </summary>
-    public double Bias { get; private set; }
+    public double Bias { get; set; }
 
     /// <summary>
     /// Gets the output of the neuron.
@@ -58,21 +58,5 @@ public class Neuron
         Output = activationFunction.Function(sum);
 
         return Output;
-    }
-
-    /// <summary>
-    /// Updates the weights and bias of the neuron given the gradients and a learning rate.
-    /// </summary>
-    /// <param name="weightGradients"></param>
-    /// <param name="biasGradients"></param>
-    /// <param name="learningRate"></param>
-    public void UpdateParameters(List<double> weightGradients, List<double> biasGradients, double learningRate)
-    {
-        for (int i = 0; i < Weights.Count; i++)
-        {
-            Weights[i] -= learningRate * weightGradients[i];
-        }
-
-        Bias += learningRate * biasGradients[0];
     }
 }

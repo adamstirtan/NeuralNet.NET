@@ -19,22 +19,18 @@ public class ActivationFunction
     public static ActivationFunction Sigmoid { get; } = new ActivationFunction(
         "Sigmoid",
         x => 1.0 / (1.0 + Math.Exp(-x)),
-        x =>
-        {
-            double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
-            return sigmoid * (1 - sigmoid);
-        }
+        y => y * (1 - y)
     );
 
     public static ActivationFunction Tanh { get; } = new ActivationFunction(
         "Tanh",
         x => Math.Tanh(x),
-        x => 1 - Math.Pow(Math.Tanh(x), 2)
+        y => 1 - y * y
     );
 
     public static ActivationFunction ReLU { get; } = new ActivationFunction(
         "ReLU",
         x => Math.Max(0, x),
-        x => x > 0 ? 1 : 0
+        y => y > 0 ? 1 : 0
     );
 }

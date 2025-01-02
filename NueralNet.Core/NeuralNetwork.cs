@@ -56,7 +56,7 @@ public class NeuralNetwork
             {
                 List<double> outputs = Forward(inputs);
 
-                Backpropagate(inputs, outputs, targets, learningRate);
+                Backpropagate(inputs, targets, learningRate);
             }
         }
     }
@@ -77,59 +77,80 @@ public class NeuralNetwork
     /// <param name="outputs">The actual outputs from the forward pass.</param>
     /// <param name="targets">The target outputs.</param>
     /// <param name="learningRate">The learning rate for gradient descent.</param>
-    private void Backpropagate(List<double> inputs, List<double> outputs, List<double> targets, double learningRate)
+    private void Backpropagate(List<double> inputs, List<double> targets, double learningRate)
     {
-        // Calculate output layer error (delta)
-        List<double> outputErrors = new();
-        for (int i = 0; i < outputs.Count; i++)
+        // Forward pass to get activations for all layers
+        List<List<double>> activations = new() { inputs };
+        List<double> currentInputs = inputs;
+
+        foreach (Layer layer in _layers)
         {
-            double error = targets[i] - outputs[i];
-            outputErrors.Add(error * _layers[^1].ActivationFunction.Derivative(outputs[i]));
+            List<double> layerOutputs = layer.CalculateOutputs(currentInputs);
+            activations.Add(layerOutputs);
+            currentInputs = layerOutputs;
         }
 
-        // Backpropagate the error through the layers
-        List<List<double>> layerErrors = new() { outputErrors };
-        for (int i = _layers.Count - 2; i >= 0; i--)
-        {
-            List<double> currentLayerErrors = new();
-            Layer currentLayer = _layers[i];
-            Layer nextLayer = _layers[i + 1];
-            List<double> nextLayerErrors = layerErrors[0];
+        // Initialize list to hold deltas for each layer
+        List<List<double>> deltas = new();
 
-            for (int j = 0; j < currentLayer.Neurons.Count; j++)
+        // Calculate delta for output layer
+        int lastLayerIndex = _layers.Count - 1;
+        List<double> outputActivations = activations[^1];
+        List<double> outputDeltas = new();
+
+        for (int i = 0; i < outputActivations.Count; i++)
+        {
+            double output = outputActivations[i];
+            double error = output - targets[i];
+            double delta = error * _layers[lastLayerIndex].ActivationFunction.Derivative(output);
+            outputDeltas.Add(delta);
+        }
+
+        deltas.Insert(0, outputDeltas);
+
+        // Calculate deltas for hidden layers
+        for (int l = _layers.Count - 2; l >= 0; l--)
+        {
+            Layer currentLayer = _layers[l];
+            Layer nextLayer = _layers[l + 1];
+            List<double> currentActivations = activations[l + 1];
+            List<double> layerDeltas = new();
+
+            for (int i = 0; i < currentLayer.Neurons.Count; i++)
             {
-                double error = 0;
-                for (int k = 0; k < nextLayer.Neurons.Count; k++)
+                double sum = 0;
+                for (int j = 0; j < nextLayer.Neurons.Count; j++)
                 {
-                    error += nextLayerErrors[k] * nextLayer.Neurons[k].Weights[j];
+                    sum += deltas[0][j] * nextLayer.Neurons[j].Weights[i];
                 }
-                currentLayerErrors.Add(error * currentLayer.ActivationFunction.Derivative(currentLayer.Neurons[j].Output));
+                double activation = currentActivations[i];
+                double delta = sum * currentLayer.ActivationFunction.Derivative(activation);
+                layerDeltas.Add(delta);
             }
-            layerErrors.Insert(0, currentLayerErrors);
+
+            deltas.Insert(0, layerDeltas);
         }
 
         // Update weights and biases
-        List<double> layerInputs = inputs;
-        for (int i = 0; i < _layers.Count; i++)
+        for (int l = 0; l < _layers.Count; l++)
         {
-            Layer layer = _layers[i];
-            List<double> errors = layerErrors[i];
+            Layer layer = _layers[l];
+            List<double> layerInputs = activations[l];
+            List<double> layerDeltas = deltas[l];
 
-            if (i > 0)
+            for (int i = 0; i < layer.Neurons.Count; i++)
             {
-                layerInputs = _layers[i - 1].CalculateOutputs(layerInputs);
-            }
+                Neuron neuron = layer.Neurons[i];
 
-            for (int j = 0; j < layer.Neurons.Count; j++)
-            {
-                Neuron neuron = layer.Neurons[j];
-                List<double> weightGradients = new();
-                for (int k = 0; k < neuron.Weights.Count; k++)
+                // Update weights
+                for (int j = 0; j < neuron.Weights.Count; j++)
                 {
-                    weightGradients.Add(errors[j] * layerInputs[k]);
+                    double gradient = layerDeltas[i] * layerInputs[j];
+                    neuron.Weights[j] -= learningRate * gradient;
                 }
-                List<double> biasGradients = new() { errors[j] };
-                neuron.UpdateParameters(weightGradients, biasGradients, learningRate);
+
+                // Update bias
+                neuron.Bias -= learningRate * layerDeltas[i];
             }
         }
     }
