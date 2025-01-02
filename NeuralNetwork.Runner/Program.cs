@@ -3,6 +3,9 @@
 using NeuralNetwork.Runner;
 using NueralNet.Net;
 
+const int EPOCHS = 10000;
+const double LEARNING_RATE = 0.2;
+
 XorProblem problem = new();
 
 ANN network = new(
@@ -15,7 +18,7 @@ var trainingData = problem.GetTrainingData();
 Stopwatch stopwatch = new();
 stopwatch.Start();
 
-network.Train(trainingData, epochs: 10000, learningRate: 0.2);
+network.Train(trainingData, EPOCHS, LEARNING_RATE);
 
 stopwatch.Stop();
 
