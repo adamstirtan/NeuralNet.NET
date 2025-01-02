@@ -1,4 +1,4 @@
-﻿namespace NueralNet.Core;
+﻿namespace NueralNet.Net;
 
 /// <summary>
 /// Represents a layer in a neural network.

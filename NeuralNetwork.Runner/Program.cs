@@ -1,21 +1,32 @@
-﻿using NueralNet.Core;
+﻿using System.Diagnostics;
 
-var trainingData = new List<(List<double>, List<double>)>
+using NeuralNetwork.Runner;
+using NueralNet.Net;
+
+XorProblem problem = new();
+
+ANN network = new(
+    [problem.InputSize, 3, problem.OutputSize],
+    [ActivationFunction.Sigmoid, ActivationFunction.Sigmoid]
+);
+
+var trainingData = problem.GetTrainingData();
+
+Stopwatch stopwatch = new();
+stopwatch.Start();
+
+network.Train(trainingData, epochs: 10000, learningRate: 0.2);
+
+stopwatch.Stop();
+
+Console.WriteLine($"Training Time: {stopwatch.ElapsedMilliseconds}ms\n");
+Console.WriteLine("Testing Predictions:");
+
+foreach (var (inputs, targets) in trainingData)
 {
-    (new List<double> { 0, 0 }, new List<double> { 0 }),
-    (new List<double> { 0, 1 }, new List<double> { 1 }),
-    (new List<double> { 1, 0 }, new List<double> { 1 }),
-    (new List<double> { 1, 1 }, new List<double> { 0 })
-};
+    var processedInputs = problem.PreprocessInputs(inputs);
+    var outputs = network.Predict(processedInputs);
+    var processedOutputs = problem.PostprocessOutputs(outputs);
 
-var nn = new NeuralNetwork(
-    new[] { 2, 3, 1 },
-    new[] { ActivationFunction.Sigmoid, ActivationFunction.Sigmoid });
-
-nn.Train(trainingData, epochs: 10000, learningRate: 0.5);
-
-Console.WriteLine("Testing XOR Predictions:");
-Console.WriteLine($"0 XOR 0: {nn.Predict(new List<double> { 0, 0 })[0]}");
-Console.WriteLine($"0 XOR 1: {nn.Predict(new List<double> { 0, 1 })[0]}");
-Console.WriteLine($"1 XOR 0: {nn.Predict(new List<double> { 1, 0 })[0]}");
-Console.WriteLine($"1 XOR 1: {nn.Predict(new List<double> { 1, 1 })[0]}");
+    Console.WriteLine($"Inputs: {string.Join(", ", inputs)} | Predicted: {string.Join(", ", processedOutputs)} | Actual: {string.Join(", ", targets)}");
+}

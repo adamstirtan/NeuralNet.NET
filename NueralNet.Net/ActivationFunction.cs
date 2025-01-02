@@ -1,20 +1,13 @@
-﻿namespace NueralNet.Core;
+﻿namespace NueralNet.Net;
 
 /// <summary>
 /// Represents an activation function used by a neuron in a neural network.
 /// </summary>
-public class ActivationFunction
+public class ActivationFunction(string name, Func<double, double> function, Func<double, double> derivative)
 {
-    public string Name { get; }
-    public Func<double, double> Function { get; }
-    public Func<double, double> Derivative { get; }
-
-    public ActivationFunction(string name, Func<double, double> function, Func<double, double> derivative)
-    {
-        Name = name;
-        Function = function;
-        Derivative = derivative;
-    }
+    public string Name { get; } = name;
+    public Func<double, double> Function { get; } = function;
+    public Func<double, double> Derivative { get; } = derivative;
 
     public static ActivationFunction Sigmoid { get; } = new ActivationFunction(
         "Sigmoid",

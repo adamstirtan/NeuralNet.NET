@@ -1,6 +1,6 @@
-﻿namespace NueralNet.Core;
+﻿namespace NueralNet.Net;
 
-public class NeuralNetwork
+public class ANN
 {
     private readonly List<Layer> _layers;
 
@@ -10,7 +10,7 @@ public class NeuralNetwork
     /// <param name="structure"></param>
     /// <param name="activationFunctions"></param>
     /// <exception cref="ArgumentException"></exception>
-    public NeuralNetwork(int[] structure, ActivationFunction[] activationFunctions)
+    public ANN(int[] structure, ActivationFunction[] activationFunctions)
     {
         if (structure.Length - 1 != activationFunctions.Length)
         {
@@ -80,7 +80,7 @@ public class NeuralNetwork
     private void Backpropagate(List<double> inputs, List<double> targets, double learningRate)
     {
         // Forward pass to get activations for all layers
-        List<List<double>> activations = new() { inputs };
+        List<List<double>> activations = [inputs];
         List<double> currentInputs = inputs;
 
         foreach (Layer layer in _layers)
@@ -91,18 +91,19 @@ public class NeuralNetwork
         }
 
         // Initialize list to hold deltas for each layer
-        List<List<double>> deltas = new();
+        List<List<double>> deltas = [];
 
         // Calculate delta for output layer
         int lastLayerIndex = _layers.Count - 1;
         List<double> outputActivations = activations[^1];
-        List<double> outputDeltas = new();
+        List<double> outputDeltas = [];
 
         for (int i = 0; i < outputActivations.Count; i++)
         {
             double output = outputActivations[i];
             double error = output - targets[i];
             double delta = error * _layers[lastLayerIndex].ActivationFunction.Derivative(output);
+
             outputDeltas.Add(delta);
         }
 
@@ -114,17 +115,20 @@ public class NeuralNetwork
             Layer currentLayer = _layers[l];
             Layer nextLayer = _layers[l + 1];
             List<double> currentActivations = activations[l + 1];
-            List<double> layerDeltas = new();
+            List<double> layerDeltas = [];
 
             for (int i = 0; i < currentLayer.Neurons.Count; i++)
             {
                 double sum = 0;
+
                 for (int j = 0; j < nextLayer.Neurons.Count; j++)
                 {
                     sum += deltas[0][j] * nextLayer.Neurons[j].Weights[i];
                 }
+
                 double activation = currentActivations[i];
                 double delta = sum * currentLayer.ActivationFunction.Derivative(activation);
+
                 layerDeltas.Add(delta);
             }
 

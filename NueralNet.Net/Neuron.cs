@@ -1,4 +1,4 @@
-﻿namespace NueralNet.Core;
+﻿namespace NueralNet.Net;
 
 /// <summary>
 /// Represents a neuron in a neural network.

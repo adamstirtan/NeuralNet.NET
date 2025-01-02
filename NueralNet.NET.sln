@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NueralNet.Core", "NueralNet.Core\NueralNet.Core.csproj", "{A9831DBB-B0C7-4DCD-A583-1A109C6BEC8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NueralNet.Net", "NueralNet.Net\NueralNet.Net.csproj", "{A9831DBB-B0C7-4DCD-A583-1A109C6BEC8A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Runner", "NeuralNetwork.Runner\NeuralNetwork.Runner.csproj", "{87E08609-6D15-4B19-8C3D-419B4B174456}"
 EndProject
