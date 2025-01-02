@@ -1,9 +1,16 @@
 ﻿namespace NueralNet.Core;
 
+/// <summary>
+/// Represents a neuron in a neural network.
+/// </summary>
 public class Neuron
 {
     private static readonly Random _random = new();
 
+    /// <summary>
+    /// Initializes a new instance of the Neuron class with a specified number of inputs.
+    /// </summary>
+    /// <param name="inputCount"></param>
     public Neuron(int inputCount)
     {
         Weights = new(inputCount);
@@ -16,8 +23,19 @@ public class Neuron
         Bias = _random.NextDouble() * 2 - 1;
     }
 
+    /// <summary>
+    /// Gets the weights of the neuron.
+    /// </summary>
     public List<double> Weights { get; private set; }
+
+    /// <summary>
+    /// Gets the bias of the neuron.
+    /// </summary>
     public double Bias { get; private set; }
+
+    /// <summary>
+    /// Gets the output of the neuron.
+    /// </summary>
     public double Output { get; private set; }
 
     /// <summary>
@@ -46,15 +64,15 @@ public class Neuron
     /// Updates the weights and bias of the neuron given the gradients and a learning rate.
     /// </summary>
     /// <param name="weightGradients"></param>
-    /// <param name="biasGradient"></param>
+    /// <param name="biasGradients"></param>
     /// <param name="learningRate"></param>
-    public void UpdateParameters(List<double> weightGradients, double biasGradient, double learningRate)
+    public void UpdateParameters(List<double> weightGradients, List<double> biasGradients, double learningRate)
     {
         for (int i = 0; i < Weights.Count; i++)
         {
             Weights[i] -= learningRate * weightGradients[i];
         }
 
-        Bias -= learningRate * biasGradient;
+        Bias += learningRate * biasGradients[0];
     }
 }
