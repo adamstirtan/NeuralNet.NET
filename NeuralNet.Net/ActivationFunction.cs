@@ -1,4 +1,4 @@
-﻿namespace NueralNet.Net;
+﻿namespace NeuralNet.Net;
 
 /// <summary>
 /// Represents an activation function used by a neuron in a neural network.

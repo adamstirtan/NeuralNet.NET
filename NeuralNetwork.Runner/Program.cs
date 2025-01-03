@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 
 using NeuralNetwork.Runner;
-using NueralNet.Net;
+using NeuralNet.Net;
 
 const int EPOCHS = 10000;
 const double LEARNING_RATE = 0.2;

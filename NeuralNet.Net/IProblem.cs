@@ -1,4 +1,4 @@
-﻿namespace NueralNet.Net;
+﻿namespace NeuralNet.Net;
 
 public interface IProblem
 {

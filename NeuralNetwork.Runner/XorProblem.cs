@@ -1,4 +1,4 @@
-﻿using NueralNet.Net;
+﻿using NeuralNet.Net;
 
 namespace NeuralNetwork.Runner;
 
