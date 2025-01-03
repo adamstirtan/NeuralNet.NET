@@ -6,7 +6,7 @@ on:
     - 'v*'
 
 env:
-  PROJECT_PATH: 'NueralNet.Net\NueralNet.Net.csproj'
+  PROJECT_PATH: 'NeuralNet.Net\NeuralNet.Net.csproj'
   PACKAGE_OUTPUT_PATH: ${{ github.workspace }}\output
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
 
